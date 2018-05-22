@@ -26,6 +26,10 @@ module Facebook
         message_echo
         payment
         policy_enforcement
+        pass_thread_control
+        take_thread_control
+        app_roles
+        standby
       ].freeze
 
       class << self
