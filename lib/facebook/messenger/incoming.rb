@@ -14,6 +14,7 @@ require 'facebook/messenger/incoming/pass_thread_control'
 require 'facebook/messenger/incoming/take_thread_control'
 require 'facebook/messenger/incoming/app_roles'
 require 'facebook/messenger/incoming/standby'
+require 'facebook/messenger/incoming/game_play'
 
 module Facebook
   module Messenger
@@ -39,7 +40,8 @@ module Facebook
         'pass_thread_control' => PassThreadControl,
         'take_thread_control' => TakeThreadControl,
         'app_roles' => AppRoles,
-        'standby' => Standby
+        'standby' => Standby,
+        'game_play' => GamePlay
       }.freeze
 
       # Parse the given payload and create new object of class related

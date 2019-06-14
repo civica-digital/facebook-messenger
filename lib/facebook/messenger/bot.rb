@@ -1,6 +1,8 @@
 require 'facebook/messenger/bot/error_parser'
 require 'facebook/messenger/bot/exceptions'
 require 'facebook/messenger/bot/message_type'
+require 'facebook/messenger/bot/messaging_type'
+require 'facebook/messenger/bot/tag'
 
 module Facebook
   module Messenger
@@ -11,7 +13,7 @@ module Facebook
       include HTTParty
 
       # Define base_uri for HTTParty.
-      base_uri 'https://graph.facebook.com/v2.9/me'
+      base_uri 'https://graph.facebook.com/v3.2/me'
 
       #
       # @return [Array] Array containing the supported webhook events.
@@ -30,6 +32,7 @@ module Facebook
         take_thread_control
         app_roles
         standby
+        game_play
       ].freeze
 
       class << self
@@ -41,16 +44,22 @@ module Facebook
         #
         # @param [Hash] message A Hash describing the recipient and the message.
         # @param [String] access_token Access token.
+        # @param [String] app_secret_proof proof of the app_secret
+        # https://developers.facebook.com/docs/graph-api/securing-requests/
+        # Note: we provide a helper function available at
+        # Messenger::Configuration::Providers::Base#calculate_app_secret_proof
         #
         # Returns a String describing the message ID if the message was sent,
         # or raises an exception if it was not.
-        def deliver(message, access_token:)
+        def deliver(message, access_token:, app_secret_proof: nil)
+          query = {
+            access_token: access_token
+          }
+          query[:appsecret_proof] = app_secret_proof if app_secret_proof
           response = post '/messages',
                           body: JSON.dump(message),
                           format: :json,
-                          query: {
-                            access_token: access_token
-                          }
+                          query: query
 
           Facebook::Messenger::Bot::ErrorParser.raise_errors_from(response)
 
@@ -99,7 +108,7 @@ module Facebook
         def trigger(event, *args)
           hooks.fetch(event).call(*args)
         rescue KeyError
-          $stderr.puts "Ignoring #{event} (no hook registered)"
+          warn "Ignoring #{event} (no hook registered)"
         end
 
         #

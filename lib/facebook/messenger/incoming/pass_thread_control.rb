@@ -1,9 +1,11 @@
 module Facebook
   module Messenger
     module Incoming
-      # The Referral class represents an incoming Facebook Messenger pass_thread_control.
+    # The PassThreadControl class represents an incoming Facebook Messenger
+      # pass thread control event.
       #
-      # https://developers.facebook.com/docs/messenger-platform/referral-params
+      # @see https://developers.facebook.com/docs/messenger-platform/handover-protocol/pass-thread-control
+      # @see https://developers.facebook.com/docs/messenger-platform/reference/handover-protocol/pass-thread-control
       class PassThreadControl
         include Facebook::Messenger::Incoming::Common
 
@@ -14,7 +16,6 @@ module Facebook
         def metadata
       		@messaging['pass_thread_control']['metadata']
         end
-
       end
     end
   end
